@@ -3,25 +3,31 @@ package RecommenderSystem;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Model.Movie;
+import Model.Rating;
+import Model.User;
+
 public class RSystem implements RecommenderSystem {
 
 	static ArrayList<User> allUser = new ArrayList<>();
 	static ArrayList<Movie> allMovie = new ArrayList<>();
+	static ArrayList<Rating> allRating = new ArrayList<>();
+	
 	private static Scanner sc = new Scanner(System.in);
 	
 	@Override
 	public String addUser(String firstName, String lastName, int age, String gender, String occupation) 
 	{
-		System.out.println("First Name: ");
-		firstName = sc.next();
-		System.out.println("Last Name: ");
-		lastName = sc.next();
-		System.out.println("Age: ");
-		age = sc.nextInt();
-		System.out.println("Gender(L or F): " );
-		gender = sc.next();
-		System.out.println("Occupation: ");
-		occupation = sc.next();
+//		System.out.println("First Name: ");
+//		firstName = sc.next();
+//		System.out.println("Last Name: ");
+//		lastName = sc.next();
+//		System.out.println("Age: ");
+//		age = sc.nextInt();
+//		System.out.println("Gender(L or F): " );
+//		gender = sc.next();
+//		System.out.println("Occupation: ");
+//		occupation = sc.next();
 		User user = new User(firstName, lastName, age, gender, occupation);
 		allUser.add(user);
 		return (firstName + " " + lastName + " are add!");
@@ -63,15 +69,25 @@ public class RSystem implements RecommenderSystem {
 	}
 
 	@Override
-	public String addMovie(String title, int year, String url) {
-		// TODO Auto-generated method stub
-		return null;
+	public String addMovie(String title, int year, String url) 
+	{
+		System.out.println("Title: ");
+		title = sc.next();
+		System.out.println("Year: ");
+		year = sc.nextInt();
+		System.out.println("URL: ");
+		url = sc.next();
+		Movie movie = new Movie(title, year, url);
+		allMovie.add(movie);
+		return (title + " are add!") ;
 	}
 
 	@Override
-	public String addRating(int userID, int movieID, int rating) {
-		// TODO Auto-generated method stub
-		return null;
+	public String addRating(int userID, int movieID, int rating) 
+	{
+		Rating rate = new Rating(userID, movieID, rating);
+		allRating.add(rate);				
+		return ("Rated");
 	}
 
 	@Override

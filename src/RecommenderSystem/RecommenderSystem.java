@@ -20,5 +20,5 @@ public interface RecommenderSystem
 	
 	public void load();
 	
-	public void write();
+	public void write() throws Exception;
 }

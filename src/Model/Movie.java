@@ -1,4 +1,4 @@
-package RecommenderSystem;
+package Model;
 
 public class Movie 
 {
@@ -52,6 +52,12 @@ public class Movie
 	public void setID(int iD) {
 		ID = iD;
 	}
+
+	@Override
+	public String toString() {
+		return "Movie [title=" + title + ", year=" + year + ", url=" + url + ", ID=" + ID + "]";
+	}
+	
 	
 	
 }
