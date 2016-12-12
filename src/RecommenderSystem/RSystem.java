@@ -1,138 +1,258 @@
 package RecommenderSystem;
 
+import java.io.*;
+import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+
 
 import Model.Movie;
 import Model.Rating;
 import Model.User;
+import Serializer.XMLSerliaizer;
 
-public class RSystem implements RecommenderSystem {
+public class RSystem implements RecommenderSystem 
+{
+	File datastore = new File("datastore2.xml");
+	XMLSerliaizer XMLS = new XMLSerliaizer(datastore);
 
-	static ArrayList<User> allUser = new ArrayList<>();
-	static ArrayList<Movie> allMovie = new ArrayList<>();
-	static ArrayList<Rating> allRating = new ArrayList<>();
+	private Map<Long,   User>   userIndex       = new HashMap<>();
+	private Map<Long, Movie>   movieIndex      = new HashMap<>();
+	private ArrayList<Rating> ratingIndex = new ArrayList<>();
 	
-	private static Scanner sc = new Scanner(System.in);
+	 public  void loadUserFile() 
+	  {
+		 File usersFile = new File("../Assignment2/src/data/users.dat");  
+	      Scanner In;
+	      try {
+			In = new Scanner(usersFile);
+			String delims = "[|]";			
+			while (In.hasNextLine()) 
+			{
+				String userDetails = In.nextLine();
+		        String[] userTokens = userDetails.split(delims);
+
+		        if (userTokens.length == 7)
+		        {
+//		        	Long ID = Long.parseLong(userTokens[0]);
+		        	String firstName = userTokens[1];
+		        	String lastName = userTokens[2];
+		        	String age = userTokens[3];
+		        	String gender = userTokens[4];
+		        	String occupation = userTokens[5];
+//		        	int zipcode = Integer.parseInt(userTokens[6]);
+		        	this.addUser(firstName, lastName, age, gender, occupation);
+		        
+		        }
+			}
+			
+	      } catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+	      //test
+//	      for(User x : userIndex.values())
+//	    	  System.out.println(x);
+	  }
+	 
+	 public  void loadMovieFile() 
+	  {
+		 File usersFile = new File("../Assignment2/src/data/items.dat");
+	      Scanner In;
+	      try {
+			In = new Scanner(usersFile);
+			String delims = "[|]";			
+			while (In.hasNextLine()) 
+			{
+				String userDetails = In.nextLine();
+		        String[] userTokens = userDetails.split(delims);
+		        	String title = userTokens[1];
+		        	String year = userTokens[2];
+		        	String url = userTokens[3];
+		        	this.addMovie(title, year, url);
+			}
+			
+	      } catch (FileNotFoundException e) 
+	      {
+				e.printStackTrace();
+			}
+	      
+	      //test
+//	      for(Movie x : movieIndex.values())
+//	    	  System.out.println(x);
+	  }
+	 
+	 public  void loadRatingFile() 
+	  {
+		 File usersFile = new File("../Assignment2/src/data/ratings.dat");
+	      Scanner In;
+	      try {
+			In = new Scanner(usersFile);
+			String delims = "[|]";			
+			while (In.hasNextLine()) 
+			{
+				String userDetails = In.nextLine();
+		        String[] userTokens = userDetails.split(delims);
+
+		        if (userTokens.length == 4)
+		        {
+		        	int title = Integer.parseInt(userTokens[0]);
+		        	int year = Integer.parseInt(userTokens[1]);
+		        	int url = Integer.parseInt(userTokens[2]);
+		        	this.addRating(title, year, url);
+		        
+		        }
+			}
+			
+	      } catch (FileNotFoundException e) 
+	      {
+				e.printStackTrace();
+			}
+	      //test
+//	      for(Rating x : ratingIndex)
+//	    	  System.out.println(x);
+	  }
 	
-	@Override
-	public String addUser(String firstName, String lastName, int age, String gender, String occupation) 
+	 
+	
+	public User addUser(String firstName, String lastName, String age, String gender, String occupation) 
 	{
-//		System.out.println("First Name: ");
-//		firstName = sc.next();
-//		System.out.println("Last Name: ");
-//		lastName = sc.next();
-//		System.out.println("Age: ");
-//		age = sc.nextInt();
-//		System.out.println("Gender(L or F): " );
-//		gender = sc.next();
-//		System.out.println("Occupation: ");
-//		occupation = sc.next();
-		User user = new User(firstName, lastName, age, gender, occupation);
-		allUser.add(user);
-		return (firstName + " " + lastName + " are add!");
+		User user = new User (firstName, lastName, age, gender, occupation);
+	    userIndex.put(user.ID, user);
+	    return user;
 	}
 
 	@Override
-	public String removeUser(int userID) 
+	public User removeUser(long userID) 
 	{
-		int key = userID;
+		long key = userID;
 		int low = 0;
-		int hight = allUser.size() - 1;
+		int hight = userIndex.size() - 1;
 		while(hight >= low)
 		{
 			int middle = (hight + low)/2;
-			if (allUser.get(middle).getID() == key)
+			if (userIndex.get(middle).ID == key)
 			{
-				allUser.remove(middle);
+				userIndex.remove(key);
 				System.out.println("User removed");
 			}
-			if(allUser.get(middle).getID() < key)
+			if(userIndex.get(middle).ID < key)
 			{
 				hight = middle - 1;
 			}
-			if(allUser.get(middle).getID() > key)
+			if(userIndex.get(middle).ID > key)
 			{
 				low = middle + 1;
 			}
 		}
 		
-		return (key + " doesn't exist");
+		return null;
 		
-//		for(User U : allUser)
-//		{
-//			if (U.getID() == userID);
-//			{
-//				allUser.remove(U);
-//			}
-//		}
 	}
 
 	@Override
-	public String addMovie(String title, int year, String url) 
+	public Movie addMovie(String title, String year, String url) 
 	{
-		System.out.println("Title: ");
-		title = sc.next();
-		System.out.println("Year: ");
-		year = sc.nextInt();
-		System.out.println("URL: ");
-		url = sc.next();
-		Movie movie = new Movie(title, year, url);
-		allMovie.add(movie);
-		return (title + " are add!") ;
+		Movie movie = new Movie (title, year, url);
+	    movieIndex.put(movie.ID, movie);
+	    return movie;
 	}
 
 	@Override
-	public String addRating(int userID, int movieID, int rating) 
+	public Rating addRating(int userID, int movieID, int rating) 
 	{
 		Rating rate = new Rating(userID, movieID, rating);
-		allRating.add(rate);				
-		return ("Rated");
+		ratingIndex.add(rate);	
+		return rate;
 	}
 
 	@Override
-	public String getMovie(int movieID) 
+	public Movie getMovie(long movieID) 
 	{
-		String name = null;
-		for(Movie M : allMovie)
+		return  movieIndex.get(movieID);
+	}
+
+	@Override
+	public Movie getUserRating(long userID) 
+	{
+		ArrayList<Long> Movieid = new ArrayList<>() ;
+		for (int j = 0; j < ratingIndex.size(); j++)
 		{
-			if(M.getID() == movieID);
+			if(ratingIndex.get(j).getMovieID().equals(userID));
 			{
-				name = M.getTitle();
+			Movieid.add(ratingIndex.get(j).getMovieID());
 			}
 		}
-		return name;
+		for(int i = 0; i < Movieid.size(); i++)
+		{
+			return movieIndex.get(Movieid.get(i));	
+		}
+		return null;
 	}
 
 	@Override
-	public String getUserRating(int userID) 
+	public String getUserRecommendations(long userID) 
 	{
 		
 		return null;
 	}
 
 	@Override
-	public String getUserRecommendations(int userID) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Rating> getTopTenMovie() 
+	{
+		ArrayList<Rating> rating = new ArrayList<>();
+		for(Rating R: ratingIndex)
+		{
+			if(rating.contains(R.getMovieID()))
+			{
+				for (Rating X: rating)
+				{
+					if(X.getMovieID().equals(R.getMovieID()))
+					{
+						X.setRating(R.getRating() + X.getRating());
+					}
+				}
+			}
+			else
+			{
+				rating.add(R);
+			}
+		}
+		rating.sort((a,b)-> { return b.getRating()-a.getRating(); });
+		return rating.subList(0, 9);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void load() throws Exception 
+	{
+		XMLS.read();
+		ratingIndex = (ArrayList<Rating>) 			XMLS.pop();
+		movieIndex = (Map<Long, Movie>) 			XMLS.pop();
+		userIndex = (Map<Long, User>) 				XMLS.pop();
+		User.counter = (Long) 						XMLS.pop();
+		System.out.println("x");
+		for(User x : userIndex.values())
+	    	  System.out.println(x);
+	  
 	}
 
 	@Override
-	public String getTopTenMovie() {
-		// TODO Auto-generated method stub
-		return null;
+	public void write() throws Exception 
+	{
+		XMLS.push(User.counter);
+		XMLS.push(userIndex);
+		XMLS.push(movieIndex);
+		XMLS.push(ratingIndex);
+		XMLS.write();
+	
 	}
-
-	@Override
-	public void load() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void write() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
+
+
+

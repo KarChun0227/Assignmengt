@@ -1,24 +1,32 @@
 package RecommenderSystem;
 
+import java.util.List;
+
+import Model.Movie;
+import Model.Rating;
+import Model.User;
+
 public interface RecommenderSystem 
 {
-	public String addUser(String firstName, String lastName, int age, String gender, String occupation);
+	public User addUser(String firstName, String lastName, String age, String gender, String occupation);
 	
-	public String removeUser(int userID);
+	public User removeUser(long userID);
 	
-	public  String addMovie(String title, int year, String url);
+	public  Movie addMovie(String title, String year, String url);
 	
-	public String addRating(int userID, int movieID, int rating);
+	public Rating addRating(int userID, int movieID, int rating);
 	
-	public String getMovie(int movieID);
+	public Movie getMovie(int movieID);
 	
-	public String getUserRating(int userID);
+	public Movie getUserRating(long userID);
 	
-	public String getUserRecommendations(int userID);
+	public String getUserRecommendations(long userID);
 	
-	public String getTopTenMovie();
+	public List<Rating> getTopTenMovie();
 	
-	public void load();
+	public void load() throws Exception;
 	
 	public void write() throws Exception;
+
+	Movie getMovie(long movieID);
 }
